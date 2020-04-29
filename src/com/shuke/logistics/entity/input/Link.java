@@ -1,14 +1,26 @@
 package com.shuke.logistics.entity.input;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class Link {
     private int linkId;
     private String srcNode;
     private String dstNode;
-    private LinkedList<Car> availCars = new LinkedList<>();
+    private Car[] availCars;
+    private LinkedList<Integer> availCarsId = new LinkedList<>();
     private int cost = 0;
+
+    public Integer getSrcNodeId() {
+        return Integer.parseInt(srcNode.substring(1));
+    }
+
+    public Integer getDstNodeId() {
+        return Integer.parseInt(dstNode.substring(1));
+    }
+
+    public void deleteAvailCars(Integer carId) {
+        availCarsId.remove(carId);
+    }
 
     public String getSrcNode() {
         return srcNode;
@@ -18,8 +30,8 @@ public class Link {
         return dstNode;
     }
 
-    public LinkedList<Car> getAvailCars() {
-        return availCars;
+    public LinkedList<Integer> getAvailCarsId() {
+        return availCarsId;
     }
 
     public int getCost() {
@@ -30,8 +42,10 @@ public class Link {
         this.linkId = linkId;
         this.srcNode = srcNode;
         this.dstNode = dstNode;
-        for (int i = 0; i < carNum; i++) {
-            this.availCars.add(new Car(linkId, i + 1));
+        this.availCars = new Car[carNum+1];
+        for (int i = 1; i <= carNum; i++) {
+            availCars[i] = new Car(linkId, i);
+            this.availCarsId.add(i);
         }
     }
 

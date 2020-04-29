@@ -4,15 +4,16 @@ import java.util.ArrayList;
 
 public class Item implements Comparable<Item>{
     private int itemId;
-    private String srcNode;
-    private String dstNode;
+    private int srcNode;
+    private int dstNode;
     private double weight;
+    private int weightInt;
 
-    public String getSrcNode() {
+    public int getSrcNode() {
         return srcNode;
     }
 
-    public String getDstNode() {
+    public int getDstNode() {
         return dstNode;
     }
 
@@ -20,21 +21,22 @@ public class Item implements Comparable<Item>{
         return weight;
     }
 
-    public ArrayList<String> getIncNode() {
+    public ArrayList<Integer> getIncNode() {
         return incNode;
     }
 
     /**
      * 必经站点
      */
-    private ArrayList<String> incNode;
+    private ArrayList<Integer> incNode;
 
-    public Item(int itemId, String srcNode, String dstNode, double weight, ArrayList<String> incNode) {
+    public Item(int itemId, int srcNode, int dstNode, double weight, ArrayList<Integer> incNode) {
         this.itemId = itemId;
         this.srcNode = srcNode;
         this.dstNode = dstNode;
         this.weight = weight;
         this.incNode = incNode;
+        this.weightInt = (int) weight;
     }
 
     @Override
@@ -52,9 +54,19 @@ public class Item implements Comparable<Item>{
         return itemId;
     }
 
+    /**
+     * 这里容易出错，相等必须返回0
+     * @param o
+     * @return
+     */
     @Override
     public int compareTo(Item o) {
-        if (weight<o.weight) return 1;
-        else return -1;
+        if (weightInt<o.weightInt) {
+            return 1;
+        } else if (weightInt == o.weightInt) {
+            return 0;
+        } else {
+            return -1;
+        }
     }
 }

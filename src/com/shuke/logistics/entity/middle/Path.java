@@ -9,6 +9,14 @@ public class Path {
     private int weight = -1;
     private List<Integer> links = new LinkedList<>();
 
+    public void setLinks(List<Integer> links) {
+        this.links = links;
+    }
+
+    public void setDst(int dst) {
+        this.dst = dst;
+    }
+
     public Path(int src) {
         this.src = src;
     }

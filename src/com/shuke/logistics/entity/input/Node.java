@@ -1,5 +1,7 @@
 package com.shuke.logistics.entity.input;
 
+import com.shuke.logistics.entity.middle.Path;
+
 import java.util.HashSet;
 import java.util.LinkedList;
 
@@ -8,7 +10,30 @@ public class Node {
     private HashSet<Integer> relatedLink = new HashSet<>();
     private int totalWorkerNumber;
     private int availWorkerNumber;
-    private LinkedList<Car> needWorCar;
+    private class NeedWorCarId {
+        private int needWorkCarId;
+        private int needWorkLinkId;
+
+        public NeedWorCarId(int needWorkCarId, int needWorkLinkId) {
+            this.needWorkCarId = needWorkCarId;
+            this.needWorkLinkId = needWorkLinkId;
+        }
+    }
+    private LinkedList<NeedWorCarId> needWorCarId = new LinkedList<>();
+
+    public void setNeedWorCar(Integer carId,Integer linkId) {
+        this.needWorCarId.add(new NeedWorCarId(carId,linkId));
+    }
+
+    private Path[] minPath;
+
+    public Path[] getMinPath() {
+        return minPath;
+    }
+
+    public void setMinPath(Path[] minPath) {
+        this.minPath = minPath;
+    }
 
     public HashSet<Integer> getRelatedLink() {
         return relatedLink;
@@ -22,9 +47,6 @@ public class Node {
         return availWorkerNumber;
     }
 
-    public LinkedList<Car> getNeedWorCar() {
-        return needWorCar;
-    }
 
     public Node(int nodeId, int totalWorkerNumber) {
         this.nodeId = nodeId;
@@ -32,24 +54,14 @@ public class Node {
         availWorkerNumber = totalWorkerNumber;
     }
 
-    public void setAvailWorkerNumber(int availWorkerNumber) {
-        this.availWorkerNumber = availWorkerNumber;
+    public void setAvailWorkerNumber() {
+        this.availWorkerNumber--;
     }
 
     public void setRelatedLink(Integer integer) {
         this.relatedLink.add(integer);
     }
 
-    @Override
-    public String toString() {
-        return "Node{" +
-                "nodeId=" + nodeId +
-                ", relatedLink=" + relatedLink +
-                ", totalWorkerNumber=" + totalWorkerNumber +
-                ", availWorkerNumber=" + availWorkerNumber +
-                ", needWorCar=" + needWorCar +
-                '}';
-    }
 
     public int getNodeId() {
         return nodeId;

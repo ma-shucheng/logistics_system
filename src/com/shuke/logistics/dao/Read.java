@@ -31,9 +31,10 @@ public class Read {
     public void readFile() {
         Read read = new Read();
         try {
-            BufferedReader in = new BufferedReader(new FileReader("C:\\Users\\Shuke\\Desktop\\中兴大赛\\demo.txt"));
-//            BufferedReader in
-//                    = new BufferedReader(new InputStreamReader(System.in));
+//            BufferedReader in = new BufferedReader(new FileReader("C:\\Users\\Shuke\\Desktop\\中兴大赛\\demo.txt"));
+//            BufferedReader in = new BufferedReader(new FileReader("C:\\Users\\Shuke\\Desktop\\中兴大赛\\Dijkstra2020验证程序\\test.txt"));
+            BufferedReader in = new BufferedReader(new FileReader("C:\\Users\\Shuke\\Desktop\\中兴大赛\\测试用例集\\case1\\topoAndRequest1.txt"));
+//            BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
             //站点数，轨道数，列车数，列车容量
             String s = in.readLine();
             String[] dataSize = s.split(",");
@@ -80,19 +81,19 @@ public class Read {
         return link;
     }
     private Item readItem(String s) {
-        ArrayList<String> arrayList = new ArrayList<>();
+        ArrayList<Integer> arrayList = new ArrayList<>();
         String[] strings = s.split(",");
         int itemId = Integer.parseInt(strings[0].substring(1));
         String src = strings[1];
         String dst = strings[2];
-        int weight = Integer.parseInt(strings[3]);
+        Double weight = Double.parseDouble(strings[3]);
         for (int i = 4; i < strings.length; i++) {
             if (strings[i].equals("null")) {
                 break;
             }
-            arrayList.add(strings[i]);
+            arrayList.add(Integer.parseInt(strings[i].substring(1)));
         }
-        Item item = new Item(itemId, src, dst, weight, arrayList);
+        Item item = new Item(itemId, Integer.parseInt(src.substring(1)), Integer.parseInt(dst.substring(1)), weight, arrayList);
         return item;
     }
 
