@@ -25,6 +25,7 @@ public class SimplePlanItem {
     private static Node[] nodes;
     private static Link[] links;
     private static List<Item> list;
+    private static boolean success = true;
     private static void init() {
         Read read = new Read();
         read.readFile();
@@ -63,7 +64,7 @@ public class SimplePlanItem {
                 }
                 //如果无必经站点
                 if (item.getIncNode().size() == 0) {
-                    results.add(noIncArrange(item, path));
+                    results.add(noIncArrange(item));
                 }
                 //如果有必经站点
                 else {
@@ -157,8 +158,16 @@ public class SimplePlanItem {
         }
     }
 
-    private static Result noIncArrange(Item waitItem, Path path) {
+    private static Result noIncArrange(Item waitItem) {
         Result result;
+        Path path = Dijkstra.dynamicDijkstra(waitItem.getIncNode(), waitItem.getSrcNode(), waitItem.getDstNode());
+        //如果path为空动态规划失败
+        if (path == null) {
+            outPut.setTotalFailedNum();
+            outPut.setTotalFailedWeight(waitItem.getWeight());
+            result = new Result(waitItem.getItemId(),waitItem.getWeight());
+            return result;
+        }
         //初始化可用的列车，确定轨道可用的车
         LinkedList<Integer> availCarsId = links[path.getLinks().get(0)].getAvailCarsId();
         for (int rloc : path.getLinks()) {
