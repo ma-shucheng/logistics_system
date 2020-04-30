@@ -37,12 +37,10 @@ public class SimplePlanItem {
             list.add(item);
         }
         Collections.sort(list);
-        Dijkstra dijkstra = new Dijkstra();
         ReSort.reSort();
         items = ReSort.reItems;
         nodes = ReSort.reNodes;
         links = ReSort.reLinks;
-        dijkstra.allDijkstra(nodes,links);
     }
 
     public static void main(String[] args) {
@@ -53,23 +51,17 @@ public class SimplePlanItem {
         try {
             for (Item item : list) {
                 exceptionId = item.getItemId();
-                Node src = nodes[item.getSrcNode()];
-                Path path = src.getMinPath()[item.getDstNode()];
                 //判定站点的拣货员是否够用，不够用直接判定规划失败
-                if (nodes[path.getSrc()].getAvailWorkerNumber() == 0 || nodes[path.getDst()].getAvailWorkerNumber() == 0) {
+                if (nodes[item.getSrcNode()].getAvailWorkerNumber() == 0 || nodes[item.getDstNode()].getAvailWorkerNumber() == 0) {
                     outPut.setTotalFailedNum();
                     outPut.setTotalFailedWeight(item.getWeight());
                     results.add(new Result(item.getItemId(), item.getWeight()));
                     continue;
                 }
-                //如果无必经站点
-                if (item.getIncNode().size() == 0) {
-                    results.add(noIncArrange(item));
-                }
-                //如果有必经站点
-                else {
-                    results.add(haveIncArrange(item));
-                }
+
+                //将动态规划的路径规划保存到结果中
+                results.add(dijkstraArrange(item));
+
             }
         } catch (RuntimeException e) {
             System.out.println(exceptionId);
@@ -81,39 +73,6 @@ public class SimplePlanItem {
 //            System.out.println(result);
 //        }
         writeFile(outPut);
-    }
-
-
-
-    private static Result haveIncArrange(Item waitItem) {
-        Result result;
-        Path path = Dijkstra.dynamicDijkstra(waitItem.getIncNode(), waitItem.getSrcNode(), waitItem.getDstNode());
-        //如果path为空动态规划失败
-        if (path == null) {
-            outPut.setTotalFailedNum();
-            outPut.setTotalFailedWeight(waitItem.getWeight());
-            result = new Result(waitItem.getItemId(),waitItem.getWeight());
-            return result;
-        }
-        //初始化可用的列车，确定轨道可用的车
-        LinkedList<Integer> availCarsId = links[path.getLinks().get(0)].getAvailCarsId();
-        for (int rloc : path.getLinks()) {
-            availCarsId.retainAll(links[rloc].getAvailCarsId());
-        }
-        //如果可用的车为空集，则规划失败
-        if (availCarsId.size() == 0) {
-            outPut.setTotalFailedNum();
-            outPut.setTotalFailedWeight(waitItem.getWeight());
-            result = new Result(waitItem.getItemId(),waitItem.getWeight());
-            return result;
-        }
-        //取第一个公共的车
-        Integer usedCarId = availCarsId.get(0);
-        result = arrangeCar(usedCarId, waitItem, path);
-        int srcLinkId = result.getLinkIds().get(0);
-        int dstLinkId = result.getLinkIds().get(result.getLinkIds().size()-1);
-        arrangePeo(usedCarId, path.getSrc(),path.getDst(),srcLinkId,dstLinkId);
-          return result;
     }
 
 
@@ -143,22 +102,9 @@ public class SimplePlanItem {
             e.printStackTrace();
         }
     }
-    /**
-     * 安排有必经站点的车辆
-     * @param result
-     * @param path
-     * @param usedCarId
-     */
-    private static void haveIncArrangeCar(Result result,Path path, Integer usedCarId) {
-        for (int linkId : path.getLinks()) {
-            Link link = links[linkId];
-            link.deleteAvailCars(usedCarId);
-            result.setLinkIds(linkId);
-            result.setCarNums(usedCarId);
-        }
-    }
 
-    private static Result noIncArrange(Item waitItem) {
+
+    private static Result dijkstraArrange(Item waitItem) {
         Result result;
         Path path = Dijkstra.dynamicDijkstra(waitItem.getIncNode(), waitItem.getSrcNode(), waitItem.getDstNode());
         //如果path为空动态规划失败
