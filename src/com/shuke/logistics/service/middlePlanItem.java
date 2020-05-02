@@ -16,6 +16,7 @@ public class middlePlanItem {
                 }
             }
         }
+        Item[] items = ReSort.reItems;
         System.out.println("共有货物"+(Read.items.length));
         System.out.println(havePathItemNum);
     }
