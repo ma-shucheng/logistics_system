@@ -33,8 +33,8 @@ public class Read {
         try {
 //            BufferedReader in = new BufferedReader(new FileReader("C:\\Users\\Shuke\\Desktop\\中兴大赛\\测试用例集\\case1\\demo.txt"));
 //            BufferedReader in = new BufferedReader(new FileReader("C:\\Users\\Shuke\\Desktop\\中兴大赛\\Dijkstra2020验证程序\\test.txt"));
-//            BufferedReader in = new BufferedReader(new FileReader("C:\\Users\\Shuke\\Desktop\\中兴大赛\\测试用例集\\case1\\topoAndRequest1.txt"));
-            BufferedReader in = new BufferedReader(new FileReader("C:\\Users\\Shuke\\Desktop\\中兴大赛\\测试用例集\\case3\\topoAndRequest3.txt"));
+            BufferedReader in = new BufferedReader(new FileReader("C:\\Users\\Shuke\\Desktop\\中兴大赛\\测试用例集\\case1\\topoAndRequest1.txt"));
+//            BufferedReader in = new BufferedReader(new FileReader("C:\\Users\\Shuke\\Desktop\\中兴大赛\\测试用例集\\case8\\topoAndRequest8.txt"));
 //            BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
             //站点数，轨道数，列车数，列车容量
             String s = in.readLine();

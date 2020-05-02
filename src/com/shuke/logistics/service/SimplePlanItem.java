@@ -26,7 +26,6 @@ public class SimplePlanItem {
     private static Link[] links;
     private static List<Item> list;
     private static boolean success = true;
-    public static List<Integer> failedItemId = new LinkedList<>();
     private static void init() {
         Read read = new Read();
         read.readFile();
@@ -52,7 +51,7 @@ public class SimplePlanItem {
         try {
             for (Item item : list) {
                 exceptionId = item.getItemId();
-                if (checkNoWorkerInStation(item, results)) continue;
+//                if (checkNoWorkerInStation(item, results)) continue;
                 //将动态规划的路径规划保存到结果中
                 results.add(dijkstraArrange(item));
 
@@ -68,6 +67,24 @@ public class SimplePlanItem {
 //            System.out.println(result);
 //        }
         writeFile(outPut);
+    }
+
+    public static void arrangeAllItemPath() {
+        init();
+        List<Result> results = new LinkedList<>();
+        outPut = new OutPut();
+        int exceptionId = 0;
+        try {
+            for (Item item : list) {
+                exceptionId = item.getItemId();
+                //将动态规划的路径规划保存到结果中
+                results.add(dijkstraArrange(item));
+            }
+        } catch (RuntimeException e) {
+            System.out.println(exceptionId);
+            System.out.println(e);
+        }
+        nodesSeqInItem();
     }
 
 
@@ -159,7 +176,6 @@ public class SimplePlanItem {
         }
         //如果可用的车为空集，则规划失败
         if (availCarsId.size() == 0) {
-            failedItemId.add(waitItem.getItemId());
             outPut.setTotalFailedNum();
             outPut.setTotalFailedWeight(waitItem.getWeight());
             result = new Result(waitItem.getItemId(),waitItem.getWeight());

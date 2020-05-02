@@ -4,18 +4,10 @@ import com.shuke.logistics.dao.ReSort;
 import com.shuke.logistics.dao.Read;
 import com.shuke.logistics.entity.input.Item;
 
-import java.lang.reflect.Method;
-
 public class middlePlanItem {
 
     public static void main(String[] args) {
-        try {
-            Method method = SimplePlanItem.class.getMethod("main", String[].class);
-            method.invoke(SimplePlanItem.class.newInstance(), new Object[]{ new String[0]});
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        System.out.println(SimplePlanItem.failedItemId.size());
+        SimplePlanItem.arrangeAllItemPath();
         int havePathItemNum = 0;
         for (Item item : ReSort.reItems) {
             if (item != null) {
