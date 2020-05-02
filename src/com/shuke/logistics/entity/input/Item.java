@@ -1,5 +1,7 @@
 package com.shuke.logistics.entity.input;
 
+import com.shuke.logistics.entity.middle.Path;
+
 import java.util.ArrayList;
 
 public class Item implements Comparable<Item>{
@@ -8,6 +10,15 @@ public class Item implements Comparable<Item>{
     private int dstNode;
     private double weight;
     private int weightInt;
+    private Path planedPath;
+
+    public void setPlanedPath(Path planedPath) {
+        this.planedPath = planedPath;
+    }
+
+    public Path getPlanedPath() {
+        return planedPath;
+    }
 
     public int getSrcNode() {
         return srcNode;

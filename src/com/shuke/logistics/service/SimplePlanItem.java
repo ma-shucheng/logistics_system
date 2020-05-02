@@ -26,6 +26,7 @@ public class SimplePlanItem {
     private static Link[] links;
     private static List<Item> list;
     private static boolean success = true;
+    public static List<Integer> failedItemId = new LinkedList<>();
     private static void init() {
         Read read = new Read();
         read.readFile();
@@ -51,14 +52,7 @@ public class SimplePlanItem {
         try {
             for (Item item : list) {
                 exceptionId = item.getItemId();
-                //判定站点的拣货员是否够用，不够用直接判定规划失败
-                if (nodes[item.getSrcNode()].getAvailWorkerNumber() == 0 || nodes[item.getDstNode()].getAvailWorkerNumber() == 0) {
-                    outPut.setTotalFailedNum();
-                    outPut.setTotalFailedWeight(item.getWeight());
-                    results.add(new Result(item.getItemId(), item.getWeight()));
-                    continue;
-                }
-
+                if (checkNoWorkerInStation(item, results)) continue;
                 //将动态规划的路径规划保存到结果中
                 results.add(dijkstraArrange(item));
 
@@ -75,6 +69,22 @@ public class SimplePlanItem {
         writeFile(outPut);
     }
 
+
+    /**
+     * 判定站点的拣货员是否够用，不够用直接判定规划失败
+     * @param item
+     * @param results
+     * @return
+     */
+    public static boolean checkNoWorkerInStation(Item item,List<Result> results) {
+        if (nodes[item.getSrcNode()].getAvailWorkerNumber() == 0 || nodes[item.getDstNode()].getAvailWorkerNumber() == 0) {
+            outPut.setTotalFailedNum();
+            outPut.setTotalFailedWeight(item.getWeight());
+            results.add(new Result(item.getItemId(), item.getWeight()));
+            return true;
+        }
+        return false;
+    }
 
     /**
      * 结果写文件
@@ -114,6 +124,7 @@ public class SimplePlanItem {
             result = new Result(waitItem.getItemId(),waitItem.getWeight());
             return result;
         }
+        items[waitItem.getItemId()].setPlanedPath(path);
         //初始化可用的列车，确定轨道可用的车
         LinkedList<Integer> availCarsId = links[path.getLinks().get(0)].getAvailCarsId();
         for (int rloc : path.getLinks()) {
@@ -121,6 +132,7 @@ public class SimplePlanItem {
         }
         //如果可用的车为空集，则规划失败
         if (availCarsId.size() == 0) {
+            failedItemId.add(waitItem.getItemId());
             outPut.setTotalFailedNum();
             outPut.setTotalFailedWeight(waitItem.getWeight());
             result = new Result(waitItem.getItemId(),waitItem.getWeight());
