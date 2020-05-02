@@ -44,15 +44,18 @@ public class Dijkstra {
                 set.clear();
                 //将路径中所有点重新赋值给set，使得搜索路径不会重复，并将路径结果存储
                 for (Integer linkId : path.getLinks()) {
+                    stoPath.add(linkId);
+                }
+                for (Integer linkId : stoPath) {
                     set.add(links[linkId].getSrcNodeId());
                     set.add(links[linkId].getDstNodeId());
-                    stoPath.add(linkId);
                 }
                 curSrc = curDst;
             }
         }
         Path path = singleDynaDijkstra(nodes[curSrc], set, initDst,havaInc);
         if (path == null) return null;
+        path.setSrc(initSrc);
         for (Integer linkId : path.getLinks()) {
             stoPath.add(linkId);
         }
@@ -83,7 +86,6 @@ public class Dijkstra {
             HashSet<Integer> newSet = new HashSet<>();
             HashSet<Integer> newLinks = new HashSet<>();
             for (Node node : middleNodes) {
-                if (haveInc && set.contains(node.getNodeId())) continue;
                 HashSet<Integer> relatedLink = node.getRelatedLink();
                 for (Integer i : relatedLink) {
                     int src = Integer.parseInt(links[i].getSrcNode().substring(1));

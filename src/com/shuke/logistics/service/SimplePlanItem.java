@@ -61,6 +61,7 @@ public class SimplePlanItem {
             System.out.println(exceptionId);
             System.out.println(e);
         }
+        nodesSeqInItem();
         outPut.setResults(results);
 //        System.out.println(outPut.getTotalFailedNum()+","+outPut.getTotalFailedWeight());
 //        for (Result result : outPut.getResults()) {
@@ -69,6 +70,32 @@ public class SimplePlanItem {
         writeFile(outPut);
     }
 
+
+    /**
+     * 将所有路径翻译为站点顺序存入货物Item中
+     */
+    private static void nodesSeqInItem() {
+        Item[] items = ReSort.reItems;
+        for (Item item : items) {
+            List<Integer> nodes = new LinkedList<>();
+            if (item != null && item.getPlanedPath() != null) {
+                Path path = item.getPlanedPath();
+                int curSrc = path.getSrc();
+                for (Integer linkId : path.getLinks()) {
+                    Link link = links[linkId];
+                    int srcId = link.getSrcNodeId();
+                    int dstId = link.getDstNodeId();
+                    nodes.add(curSrc);
+                    //curSrc重新赋值，变为第一个路径的终点
+                    curSrc = curSrc != srcId ? srcId : dstId;
+                }
+                nodes.add(curSrc);
+                path.setNodes(nodes);
+                //item的path重新赋值
+                item.setPlanedPath(path);
+            }
+        }
+    }
 
     /**
      * 判定站点的拣货员是否够用，不够用直接判定规划失败

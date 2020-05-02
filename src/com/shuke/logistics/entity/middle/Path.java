@@ -8,6 +8,29 @@ public class Path {
     private int dst;
     private int weight = -1;
     private List<Integer> links = new LinkedList<>();
+    private List<Integer> nodes = new LinkedList<>();
+
+    public void setSrc(int src) {
+        this.src = src;
+    }
+
+    public List<Integer> getNodes() {
+        return nodes;
+    }
+
+    public void setNodes(List<Integer> nodes) {
+        this.nodes = nodes;
+    }
+
+    public String nodesSeq() {
+        StringBuilder stringBuilder = new StringBuilder();
+        if (nodes.size() == 0) return "";
+        for (int i : nodes) {
+            stringBuilder.append("Z").append(i).append(",");
+        }
+        String result = stringBuilder.toString();
+        return result.substring(0,result.lastIndexOf(","));
+    }
 
     public void setLinks(List<Integer> links) {
         this.links = links;
