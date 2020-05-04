@@ -7,6 +7,7 @@ public class Link {
     private String srcNode;
     private String dstNode;
     private Car[] availCars;
+    private int totalCarNum;
     private LinkedList<Integer> availCarsId = new LinkedList<>();
     private int cost = 0;
 
@@ -43,6 +44,7 @@ public class Link {
         this.srcNode = srcNode;
         this.dstNode = dstNode;
         this.availCars = new Car[carNum+1];
+        this.totalCarNum = carNum;
         for (int i = 1; i <= carNum; i++) {
             availCars[i] = new Car(linkId, i);
             this.availCarsId.add(i);
@@ -55,5 +57,9 @@ public class Link {
 
     public void setCost(int cost) {
         this.cost = cost;
+    }
+
+    public int getTotalCarNum() {
+        return totalCarNum;
     }
 }

@@ -12,6 +12,11 @@ public class Item implements Comparable<Item>{
     private int weightInt;
     private Path planedPath;
 
+
+    public String outSrcAndDst() {
+        return srcNode+","+dstNode;
+    }
+
     public void setPlanedPath(Path planedPath) {
         this.planedPath = planedPath;
     }

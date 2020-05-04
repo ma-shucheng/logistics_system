@@ -6,7 +6,7 @@ import java.util.List;
 public class OutPut {
     private int totalFailedNum = 0;
     private double totalFailedWeight = 0;
-    private List<Result> results;
+    private List<Result> results = new LinkedList<>();
 
     public int getTotalFailedNum() {
         return totalFailedNum;
@@ -32,7 +32,7 @@ public class OutPut {
         this.totalFailedWeight +=  Double.parseDouble(String.format("%.3f", totalFailedWeight));
     }
 
-    public void setResults(List<Result> results) {
-        this.results = results;
+    public void setResults(Result result) {
+        this.results.add(result);
     }
 }

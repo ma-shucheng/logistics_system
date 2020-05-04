@@ -21,7 +21,7 @@ import java.util.ArrayList;
  * @see com.shuke.logistics.dao
  *
  */
-public class Read {
+public class  Read {
 
     public static Node[] nodes;
     public static Link[] links;
@@ -31,10 +31,18 @@ public class Read {
     public void readFile() {
         Read read = new Read();
         try {
+            String[] filePath = {"C:\\Users\\Shuke\\Desktop\\中兴大赛\\测试用例集\\case1\\topoAndRequest1.txt",
+                    "C:\\Users\\Shuke\\Desktop\\中兴大赛\\测试用例集\\case2\\topoAndRequest2.txt",
+                    "C:\\Users\\Shuke\\Desktop\\中兴大赛\\测试用例集\\case3\\topoAndRequest3.txt",
+                    "C:\\Users\\Shuke\\Desktop\\中兴大赛\\测试用例集\\case4\\topoAndRequest4.txt",
+                    "C:\\Users\\Shuke\\Desktop\\中兴大赛\\测试用例集\\case5\\topoAndRequest5.txt",
+                    "C:\\Users\\Shuke\\Desktop\\中兴大赛\\测试用例集\\case6\\topoAndRequest6.txt",
+                    "C:\\Users\\Shuke\\Desktop\\中兴大赛\\测试用例集\\case7\\topoAndRequest7.txt",
+                    "C:\\Users\\Shuke\\Desktop\\中兴大赛\\测试用例集\\case8\\topoAndRequest8.txt"};
 //            BufferedReader in = new BufferedReader(new FileReader("C:\\Users\\Shuke\\Desktop\\中兴大赛\\测试用例集\\case1\\demo.txt"));
 //            BufferedReader in = new BufferedReader(new FileReader("C:\\Users\\Shuke\\Desktop\\中兴大赛\\Dijkstra2020验证程序\\test.txt"));
-            BufferedReader in = new BufferedReader(new FileReader("C:\\Users\\Shuke\\Desktop\\中兴大赛\\测试用例集\\case1\\topoAndRequest1.txt"));
-//            BufferedReader in = new BufferedReader(new FileReader("C:\\Users\\Shuke\\Desktop\\中兴大赛\\测试用例集\\case8\\topoAndRequest8.txt"));
+//            BufferedReader in = new BufferedReader(new FileReader("C:\\Users\\Shuke\\Desktop\\中兴大赛\\测试用例集\\case1\\topoAndRequest1.txt"));
+            BufferedReader in = new BufferedReader(new FileReader(filePath[7]));
 //            BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
             //站点数，轨道数，列车数，列车容量
             String s = in.readLine();

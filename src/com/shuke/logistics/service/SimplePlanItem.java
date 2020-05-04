@@ -24,7 +24,6 @@ public class SimplePlanItem {
     private static Item[] items;
     private static Node[] nodes;
     private static Link[] links;
-    private static List<Item> list;
     private static boolean success = true;
     private static void init() {
         Read read = new Read();
@@ -32,11 +31,6 @@ public class SimplePlanItem {
         oldItems = Read.items;
         oldNodes = Read.nodes;
         oldLinks = Read.links;
-        list = new LinkedList<>();
-        for (Item item : oldItems) {
-            list.add(item);
-        }
-        Collections.sort(list);
         ReSort.reSort();
         items = ReSort.reItems;
         nodes = ReSort.reNodes;
@@ -52,7 +46,7 @@ public class SimplePlanItem {
         outPut = new OutPut();
         int exceptionId = 0;
         try {
-            for (Item item : list) {
+            for (Item item : items) {
                 exceptionId = item.getItemId();
                 //将动态规划的路径规划保存到结果中
                 dijkstraArrange(item);
@@ -153,17 +147,25 @@ public class SimplePlanItem {
      */
     public static void writeFile(OutPut outPut) {
         try {
-            File file = new File("C:\\Users\\Shuke\\Desktop\\中兴大赛\\测试用例集\\case1\\result.txt");
+            File file = new File("C:\\Users\\Shuke\\Desktop\\中兴大赛\\测试用例集\\case8\\result.txt");
             if(!file.exists()){
                 file.createNewFile();
             }
             StringBuilder stringBuilder = new StringBuilder();
+            //使用true，即进行append file
+            FileWriter fileWritter = new FileWriter(file,false);
+            if (outPut == null) {
+                stringBuilder.append("测试");
+                fileWritter.write(stringBuilder.toString());
+                fileWritter.flush();
+                fileWritter.close();
+                System.out.println("finish");
+                return;
+            }
             stringBuilder.append(outPut.getTotalFailedNum()+","+outPut.getTotalFailedWeight()+"\n");
             for (Result result : outPut.getResults()) {
                 stringBuilder.append(result+"\n");
             }
-            //使用true，即进行append file
-            FileWriter fileWritter = new FileWriter(file,false);
             fileWritter.write(stringBuilder.toString());
             fileWritter.flush();
             fileWritter.close();
