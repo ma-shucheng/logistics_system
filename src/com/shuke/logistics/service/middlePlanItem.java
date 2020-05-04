@@ -28,11 +28,83 @@ public class middlePlanItem {
             //重量为100的货物安排
             else if (item.getWeight() == 100) {
                 arrange100Item(item);
+            }
+            //重量为50到100的货物
+            else if (item.getWeight() > 50) {
+                arrrngeAb50Item(item);
             } else {
                 failedItemDeal(new Result(item.getItemId(), item.getWeight()), item);
             }
         }
         SimplePlanItem.writeFile(outPut);
+    }
+
+    /**
+     * 安排大于50小于100的货物，与100的货物类似不过先放到可用列车中，保证可以拼车
+     * @param waitItem
+     */
+    private static void arrrngeAb50Item(Item waitItem) {
+        Result result = new Result(waitItem.getItemId(),waitItem.getWeight());
+        //初始化必经站点
+        List<Integer> passNodes = waitItem.getPlanedPath().getNodes();
+        //先判断起点是否有空余的工作人员，如果没有直接失败
+        if (nodeWorkNumNotEnough(waitItem, waitItem.getSrcNode(), 1)) return;
+        //经过的第一个轨道ID
+        int initLinkId = waitItem.getPlanedPath().getLinks().get(0);
+        //再判定起始路径是否还有可用车辆，如果没有直接失败
+        if (linkCarNotEnough(waitItem, links[initLinkId])) return;
+        //初始化起点出发路径轨道的可用车辆，提取可用车辆ID，默认安排可用的第一辆车
+        Integer useCarId = links[initLinkId].getAvailCarsId().get(0);
+        //安排起点工作人员
+        arrangeNodeWorker(waitItem.getSrcNode(), initLinkId, useCarId);
+        //开始遍历规划路径
+        int passNodeNum = 0;
+        //存贮上一次的轨道ID
+        int befLinkId = 0;
+        for (Integer linkId : waitItem.getPlanedPath().getLinks()) {
+            Link link = links[linkId];
+            //实时记录经过的第几个站点
+            int curNodeId = passNodes.get(passNodeNum);
+            passNodeNum++;
+            //如果轨道有相同编号的可用车辆，安排车辆，将其存入结果，并将这个车辆信息缓存在轨道中，注明现有载重
+            if (link.getAvailCarsId().contains(useCarId)) {
+                arrangeCar(result, linkId, useCarId);
+                //将还可用的车辆信息缓存
+                cacheNotMaxCar(linkId, useCarId, waitItem);
+            }
+            //如果轨道含有的可用轨道，不含目前的轨道，则要进行换乘
+            else {
+                //先判断站点是否还有可用的两个拣货员，如果没有直接失败
+                if (nodeWorkNumNotEnough(waitItem,curNodeId,2)) return;
+                //判定这一轨道是否还有可用车辆，如果没有了，也失败处理
+                if (linkCarNotEnough(waitItem, link)) return;
+                //安排站点拣货员和初始化新车
+                arrangeNodeWorker(curNodeId, befLinkId, useCarId);
+                //新的可用车ID
+                useCarId = link.getAvailCarsId().get(0);
+                arrangeNodeWorker(curNodeId, linkId, useCarId);
+                arrangeCar(result, linkId, useCarId);
+                //将还可用的车辆信息缓存
+                cacheNotMaxCar(linkId, useCarId, waitItem);
+            }
+            befLinkId = linkId;
+        }
+        //判断终点是否有可用拣货员，如果没有判定失败
+        if (nodeWorkNumNotEnough(waitItem, waitItem.getDstNode(), 1)) return;
+        //安排终点拣货员
+        arrangeNodeWorker(waitItem.getDstNode(), befLinkId, useCarId);
+        //将结果存入输出中
+        outPut.setResults(result);
+    }
+
+    /**
+     * 将列车进行缓存，并刷新可用重量
+     * @param linkId
+     * @param useCarId
+     * @param item
+     */
+    private static void cacheNotMaxCar(int linkId, int useCarId, Item item) {
+        links[linkId].setNotMaxCarsId(useCarId, item);
     }
 
     private static void arrange100Item(Item waitItem) {

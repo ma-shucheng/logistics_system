@@ -9,6 +9,10 @@ public class Link {
     private Car[] availCars;
     private int totalCarNum;
     private LinkedList<Integer> availCarsId = new LinkedList<>();
+    private LinkedList<Integer> notMaxCarsId = new LinkedList<>();
+
+
+
     private int cost = 0;
 
     public Integer getSrcNodeId() {
@@ -62,4 +66,19 @@ public class Link {
     public int getTotalCarNum() {
         return totalCarNum;
     }
+
+    public void setNotMaxCarsId(Integer useCarId, Item item) {
+        this.notMaxCarsId.add(useCarId);
+        //刷新可用重量
+        this.availCars[useCarId].setAvailWeight(item.getWeight());
+    }
+
+    public Car secletCarById(Integer useCarId) {
+        return this.availCars[useCarId];
+    }
+
+    public boolean carInNotMaxCar(Integer useCarId) {
+        return this.notMaxCarsId.contains(useCarId);
+    }
+
 }

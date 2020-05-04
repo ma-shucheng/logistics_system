@@ -31,6 +31,6 @@ public class Car {
 
     public void setAvailWeight(double useWeight) {
         //保留3位小数
-        this.availWeight = Double.parseDouble(String.format("%.4f", maxWeight - useWeight));
+        this.availWeight = Double.parseDouble(String.format("%.4f", this.availWeight - useWeight));
     }
 }
