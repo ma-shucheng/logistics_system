@@ -3,26 +3,40 @@ package com.shuke.logistics.entity.input;
 import com.shuke.logistics.entity.middle.Path;
 
 import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.Set;
 
 public class Node {
     private int nodeId;
     private HashSet<Integer> relatedLink = new HashSet<>();
+
+    @Override
+    public String toString() {
+        return "Node{" +
+                "nodeId=" + nodeId +
+                ", totalWorkerNumber=" + totalWorkerNumber +
+                ", availWorkerNumber=" + availWorkerNumber +
+                ", needWorCarIdStr=" + needWorCarIdStr.size() +
+                '}';
+    }
+
     private int totalWorkerNumber;
     private int availWorkerNumber;
-    private class NeedWorCarId {
-        private int needWorkCarId;
-        private int needWorkLinkId;
 
-        public NeedWorCarId(int needWorkCarId, int needWorkLinkId) {
-            this.needWorkCarId = needWorkCarId;
-            this.needWorkLinkId = needWorkLinkId;
-        }
-    }
-    private LinkedList<NeedWorCarId> needWorCarId = new LinkedList<>();
+
+    private Set<String> needWorCarIdStr = new HashSet<>();
 
     public void setNeedWorCar(Integer carId,Integer linkId) {
-        this.needWorCarId.add(new NeedWorCarId(carId,linkId));
+        this.needWorCarIdStr.add(carId + "," + linkId);
+    }
+
+    public boolean exitNeedWorCar(Integer carId,Integer linkId) {
+        String str = carId + "," + linkId;
+        return needWorCarIdStr.contains(str);
+    }
+
+    public void deleteNeedWorCar(Integer carId,Integer linkId) {
+        String str = carId + "," + linkId;
+        needWorCarIdStr.remove(str);
     }
 
     private Path[] minPath;

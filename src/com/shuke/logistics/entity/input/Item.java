@@ -11,7 +11,15 @@ public class Item implements Comparable<Item>{
     private double weight;
     private int weightInt;
     private Path planedPath;
+    private int itemNumInPath = 0;
 
+    public int getItemNumInPath() {
+        return itemNumInPath;
+    }
+
+    public void setItemNumInPath(int itemNumInPath) {
+        this.itemNumInPath = itemNumInPath;
+    }
 
     public String outSrcAndDst() {
         return srcNode+","+dstNode;
@@ -59,10 +67,10 @@ public class Item implements Comparable<Item>{
     public String toString() {
         return "Item{" +
                 "itemId=" + itemId +
-                ", srcNode='" + srcNode + '\'' +
-                ", dstNode='" + dstNode + '\'' +
+                ", srcNode=" + srcNode +
+                ", dstNode=" + dstNode +
                 ", weight=" + weight +
-                ", incNode=" + incNode +
+                ", itemNumInPath=" + itemNumInPath +
                 '}';
     }
 

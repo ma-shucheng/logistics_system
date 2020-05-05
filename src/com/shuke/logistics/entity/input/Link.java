@@ -67,10 +67,19 @@ public class Link {
         return totalCarNum;
     }
 
-    public void setNotMaxCarsId(Integer useCarId, Item item) {
+    @Override
+    public String toString() {
+        return "Link{" +
+                "linkId=" + linkId +
+                ", availCarsId=" + availCarsId.size() +
+                ", notMaxCarsId=" + notMaxCarsId.size() +
+                '}';
+    }
+
+    public void setNotMaxCarsId(Integer useCarId, Double avWeight) {
         this.notMaxCarsId.add(useCarId);
         //刷新可用重量
-        this.availCars[useCarId].setAvailWeight(item.getWeight());
+        this.availCars[useCarId].setAvailWeight(avWeight);
     }
 
     public Car secletCarById(Integer useCarId) {

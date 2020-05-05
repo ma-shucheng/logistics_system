@@ -12,6 +12,16 @@ public class Result {
         return itemId;
     }
 
+    public Result(int itemId, LinkedList<Integer> linkIds, LinkedList<Integer> carNums) {
+        this.itemId = itemId;
+        this.linkIds = linkIds;
+        this.carNums = carNums;
+    }
+
+    public LinkedList<Integer> getCarNums() {
+        return carNums;
+    }
+
     public LinkedList<Integer> getLinkIds() {
         return linkIds;
     }
