@@ -1,10 +1,12 @@
 package com.shuke.logistics.entity.middle;
 
+import com.shuke.logistics.entity.input.Item;
+import com.shuke.logistics.service.MiddlePlanItem;
+
 import java.util.*;
 
 public class SortItem {
     private Map<Double, List<Integer>> sortItem = new HashMap<>();
-    private Set<Integer> allItemID = new HashSet<>();
     private int allItemIdsNum = 0;
 
     public int getAllItemIdsNum() {
@@ -35,6 +37,27 @@ public class SortItem {
             for (Double weight : getWeights()) {
                 for (Integer itemId : sortItem.get(weight)) {
                     allItemID.add(itemId);
+                }
+            }
+        }
+    }
+
+    public Double getAllWeight () {
+        Double allWeight = 0.0;
+        if (getWeights().size() != 0) {
+            for (Double weight : getWeights()) {
+                int size = sortItem.get(weight).size();
+                allWeight += weight * size;
+            }
+        }
+        return allWeight;
+    }
+
+    public void getAllItemID (List<Item> allItemID) {
+        if (getWeights().size() != 0) {
+            for (Double weight : getWeights()) {
+                for (Integer itemId : sortItem.get(weight)) {
+                    allItemID.add(MiddlePlanItem.items[itemId]);
                 }
             }
         }

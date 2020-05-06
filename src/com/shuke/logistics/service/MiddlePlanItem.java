@@ -11,16 +11,16 @@ import com.shuke.logistics.entity.output.Result;
 
 import java.util.*;
 
-public class middlePlanItem {
+public class MiddlePlanItem {
 
     public static OutPut outPut;
-    private static Item[] items;
-    private static Link[] links;
-    private static Node[] nodes;
-    private static Map<String, SortItem> sortItemMap;
-    private static List<Item> sortItemByWe;
-    private static Set<Integer> arrangedItemIds = new HashSet<>();
-    public static void main(String[] args) {
+    public static Item[] items;
+    public static Link[] links;
+    public static Node[] nodes;
+    public static Map<String, SortItem> sortItemMap;
+    public static List<Item> sortItemByWe;
+
+    public static void arrange100AndAb50() {
         init();
         for (Item item : sortItemByWe) {
             //没有安排到路径的
@@ -36,26 +36,33 @@ public class middlePlanItem {
                 arrangeAb50Item(item);
             }
         }
+    }
 
-        for (String path : sortItemMap.keySet()) {
-            SortItem sortItem = sortItemMap.get(path);
-            Set<Integer> allItemId = new HashSet<>();
-            sortItem.getAllItemID(allItemId);
-            for (Integer itemId : allItemId) {
-                Item item = items[itemId];
-                failedItemDeal(new Result(item.getItemId(), item.getWeight()), item);
+
+    public static void failedRemainSortItemMap() {
+        for (String string : sortItemMap.keySet()) {
+            Set<Integer> itemIds = new HashSet<>();
+            sortItemMap.get(string).getAllItemID(itemIds);
+            for (Integer itemId : itemIds) {
+                Item item1 = items[itemId];
+                MiddlePlanItem.failedItemDeal(new Result(item1.getItemId(), item1.getWeight()), item1);
             }
         }
-        SimplePlanItem.writeFile(outPut);
     }
+
 
     /**
-     * 安排小于50的货物，尽量与轨道上的列车凑单
-     * @param waitItem
+     * 查看sortItemMap中还剩多少元素
+     * @return
      */
-    private static void arrangeBl50Item(Item waitItem) {
-
+    public static int remainItemNum() {
+        int num = 0;
+        for (String path : sortItemMap.keySet()) {
+            num += sortItemMap.get(path).getAllItemIdsNum();
+        }
+        return num;
     }
+
 
     /**
      * 安排大于50小于100的货物，与100的货物类似不过先放到可用列车中，保证可以拼车
@@ -179,7 +186,7 @@ public class middlePlanItem {
      * @param linkId
      * @param useCarId
      */
-    private static void cacheNotMaxCar(int linkId, int useCarId, Double avWeight) {
+    public static void cacheNotMaxCar(int linkId, int useCarId, Double avWeight) {
         links[linkId].setNotMaxCarsId(useCarId, avWeight);
     }
 
@@ -286,7 +293,7 @@ public class middlePlanItem {
      * @param linkId
      * @param useCarId
      */
-    private static void arrangeCar(Result result, int linkId, int useCarId) {
+    public static void arrangeCar(Result result, int linkId, int useCarId) {
         //删除已使用的列车
         links[linkId].deleteAvailCars(useCarId);
         //存入结果中
@@ -381,7 +388,7 @@ public class middlePlanItem {
      * 安排100货物的站点工作人员
      * @param nodeId
      */
-    private static void arrange100NodeWorker(int nodeId) {
+    public static void arrange100NodeWorker(int nodeId) {
         Node node = nodes[nodeId];
         //站点有效工作人员减少
         node.setAvailWorkerNumber();
@@ -393,7 +400,7 @@ public class middlePlanItem {
      * @param linkId
      * @param useCarId
      */
-    private static void arrangeBl100NodeWorker(int nodeId,int linkId,int useCarId) {
+    public static void arrangeBl100NodeWorker(int nodeId,int linkId,int useCarId) {
         Node node = nodes[nodeId];
         //站点有效工作人员减少
         node.setAvailWorkerNumber();
@@ -406,7 +413,7 @@ public class middlePlanItem {
      * @param result
      * @param waitItem
      */
-    private static void failedItemDeal(Result result,Item waitItem) {
+    public static void failedItemDeal(Result result, Item waitItem) {
         outPut.setTotalFailedNum();
         outPut.setTotalFailedWeight(waitItem.getWeight());
         outPut.setResults(result);
@@ -497,7 +504,7 @@ public class middlePlanItem {
      * @param string
      * @return
      */
-    private static String pathReverse(String string) {
+    public static String pathReverse(String string) {
         StringBuilder stringBuilder = new StringBuilder();
         String[] nodes = string.split(",");
         for (int i = nodes.length-1; i >= 0; i--) {
