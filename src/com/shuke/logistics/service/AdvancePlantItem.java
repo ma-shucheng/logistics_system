@@ -56,16 +56,8 @@ public class AdvancePlantItem {
         if (linkCarNotEnoughCarp(links[initLinkId], itemGroup.getItemIds())) return;
         //初始化起点出发路径轨道的可用车辆，提取可用车辆ID，默认安排可用的第一辆车
         Integer useCarId = links[initLinkId].getAvailCarsId().get(0);
-        //安排起点工作人员
-        if (max) {
-            MiddlePlanItem.arrange100NodeWorker(waitItem.getSrcNode());
-        } else {
-            MiddlePlanItem.arrangeBl100NodeWorker(waitItem.getSrcNode(), initLinkId, useCarId);
-        }
         //开始遍历规划路径
         int passNodeNum = 0;
-        //存贮上一次的轨道ID
-        int befLinkId = 0;
         for (Integer linkId : waitItem.getPlanedPath().getLinks()) {
             Link link = links[linkId];
             //实时记录经过的第几个站点
@@ -73,12 +65,8 @@ public class AdvancePlantItem {
             passNodeNum++;
             //如果轨道有相同编号的可用车辆，安排车辆，将其存入结果
             if (link.getAvailCarsId().contains(useCarId)) {
-                if (max) {
-                    MiddlePlanItem.arrangeCar(result, linkId, useCarId);
-                } else {
-                    MiddlePlanItem.arrangeCar(result, linkId, useCarId);
-                    MiddlePlanItem.cacheNotMaxCar(linkId, useCarId, itemGroup.getAvilWeight());;
-                }
+                //安排站点拣货员和初始化新车
+                MiddlePlanItem.storageResult(result, linkId, useCarId);
             }
             //如果轨道含有的可用轨道，不含目前的轨道，则要进行换乘
             else {
@@ -86,34 +74,18 @@ public class AdvancePlantItem {
                 if (nodeWorkNumNotEnoughCarp(curNodeId,2, itemGroup.getItemIds())) return;
                 //判定这一轨道是否还有可用车辆，如果没有了，也失败处理
                 if (linkCarNotEnoughCarp(link, itemGroup.getItemIds())) return;
-                //安排站点拣货员和初始化新车
-                if (max) {
-                    MiddlePlanItem.arrange100NodeWorker(curNodeId);
-                } else {
-                    MiddlePlanItem.arrangeBl100NodeWorker(curNodeId, befLinkId, useCarId);
-                }
                 //新的可用车ID
                 useCarId = link.getAvailCarsId().get(0);
                 //安排站点拣货员和初始化新车
-                if (max) {
-                    MiddlePlanItem.arrange100NodeWorker(curNodeId);
-                    MiddlePlanItem.arrangeCar(result, linkId, useCarId);
-                } else {
-                    MiddlePlanItem.arrangeBl100NodeWorker(curNodeId, linkId, useCarId);
-                    MiddlePlanItem.arrangeCar(result, linkId, useCarId);
-                    //将还可用的车辆信息缓存
-                    MiddlePlanItem.cacheNotMaxCar(linkId, useCarId, itemGroup.getAvilWeight());
-                }
+                MiddlePlanItem.storageResult(result, linkId, useCarId);
             }
-            befLinkId = linkId;
         }
         //判断终点是否有可用拣货员，如果没有判定失败
         if (nodeWorkNumNotEnoughCarp(waitItem.getDstNode(), 1, itemGroup.getItemIds())) return;
-        //安排终点拣货员
         if (max) {
-            MiddlePlanItem.arrange100NodeWorker(waitItem.getDstNode());
+            MiddlePlanItem.arrange100CarAndWor(result, passNodes);
         } else {
-            MiddlePlanItem.arrangeBl100NodeWorker(waitItem.getDstNode(), befLinkId, useCarId);
+            MiddlePlanItem.arrangeBl100CarAndWor(result, passNodes, itemGroup.getAvilWeight());
         }
         storageResultCarp(result, itemGroup);
     }
