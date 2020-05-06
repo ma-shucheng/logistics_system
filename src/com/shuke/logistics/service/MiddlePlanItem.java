@@ -528,6 +528,20 @@ public class MiddlePlanItem {
             sortItemMap.put(entry.getKey(), sortItem);
         }
 
+
+        //节点初始化
+        nodes = new Node[ReSort.reNodes.length];
+        for (Node node : ReSort.reNodes) {
+            nodes[node.getNodeId()] = new Node(node.getNodeId(), node.getTotalWorkerNumber());
+        }
+        //链路初始化
+        links = new Link[ReSort.reLinks.length];
+        for (Link link : ReSort.reLinks) {
+            links[link.getLinkId()] = new Link(link.getLinkId(), link.getSrcNode(), link.getDstNode(), link.getTotalCarNum());
+        }
+        //先进行打包处理
+        CarpoolPlantItem.arrangeCarpool();
+        //再对货物进行排序
         sortItemByWe = new LinkedList<>();
         for (Item item : items) {
             if (item.getPlanedPath() != null) {
@@ -540,17 +554,6 @@ public class MiddlePlanItem {
         }
         //货物按重量和路径货物数降序排序
         CompareItem compareItem = new CompareItem(sortItemByWe);
-
-        //节点初始化
-        nodes = new Node[ReSort.reNodes.length];
-        for (Node node : ReSort.reNodes) {
-            nodes[node.getNodeId()] = new Node(node.getNodeId(), node.getTotalWorkerNumber());
-        }
-        //链路初始化
-        links = new Link[ReSort.reLinks.length];
-        for (Link link : ReSort.reLinks) {
-            links[link.getLinkId()] = new Link(link.getLinkId(), link.getSrcNode(), link.getDstNode(), link.getTotalCarNum());
-        }
     }
 
     /**
