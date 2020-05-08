@@ -41,7 +41,7 @@ public class CarpoolPlantItem {
      * 安排拼车重量为100的货物
      * @param itemGroup
      */
-    private static void arrangeItemGroup(ItemGroup itemGroup, boolean max) {
+    public static void arrangeItemGroup(ItemGroup itemGroup, boolean max) {
         //以组内第一个货物作为规划对象
         Item waitItem = itemGroup.getFirstItem();
         Result result = new Result(waitItem.getItemId(),waitItem.getWeight());
